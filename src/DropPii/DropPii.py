@@ -1,17 +1,10 @@
 import json
 
-import boto3
+from .s3_get import s3_get
 
 
 def anonymize_fields(json_string: str) -> bytes:
-    args = json.loads(json_string)
-    s3_parts: list[str] = args['s3_path'].replace('s3://', '').split('/')
-
-    bucket = s3_parts.pop(0)
-    file_path = '/'.join(s3_parts)
-    s3_client = boto3.client(service_name='s3')
-
-    response = s3_client.get_object(Bucket=bucket, Key=file_path)
-
-    data = response['Body'].read()
+    params = json.loads(json_string)
+    s3_uri = params['s3_uri']
+    data = s3_get.s3_get(s3_uri)
     return data

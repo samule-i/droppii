@@ -3,8 +3,6 @@ import json
 from io import StringIO
 
 import boto3
-import pytest
-from _csv import Error as csv_Error
 from moto import mock_aws
 
 from DropPii.DropPii import anonymize_fields
@@ -16,7 +14,7 @@ def test_return_value_is_compatable_with_s3():
     bucket = 'test-bucket'
     key = 'test-key.csv'
 
-    args = {"s3_path": f's3://{bucket}/{key}', "pii_fields": []}
+    args = {"s3_uri": f's3://{bucket}/{key}', "pii_fields": []}
     json_string = json.dumps(args)
 
     s3client = boto3.client(service_name='s3', region_name=region)
@@ -33,7 +31,7 @@ def test_csv_returns_csv(populated_s3):
     with open('./test/sample_files/small.csv', 'r') as csv_file:
         file_reader = csv.reader(csv_file)
         original_keys = [row for row in file_reader][0]
-    csv_string = '{"s3_path": "s3://test/test.csv", "pii_fields": []}'
+    csv_string = '{"s3_uri": "s3://test/test.csv", "pii_fields": []}'
     csv_result = anonymize_fields(csv_string).decode()
     bytes_reader = csv.reader(StringIO(csv_result))
     bytes_keys = [row for row in bytes_reader][0]

@@ -46,15 +46,16 @@ def parquet_bytes(data: pl.DataFrame) -> BytesIO:
     buf.seek(0)
     return buf
 
-@pytest.fixture(scope='function')
-def small_fake_data(faker):
+
+@pytest.fixture(scope='session')
+def small_fake_data():
     random.seed(0)
     fake_data = generate_fake_data(100)
     return fake_data
 
 
-@pytest.fixture(scope='function')
-def large_fake_data(faker):
+@pytest.fixture(scope='session')
+def large_fake_data():
     random.seed(0)
     fake_data = generate_fake_data(25_000)
     return fake_data

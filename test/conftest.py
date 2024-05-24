@@ -26,7 +26,8 @@ def generate_fake_data(rows):
     return fake_data
 
 
-def write_csv_as_bytes(data: pl.DataFrame) -> BytesIO:
+def csv_bytes(data: pl.DataFrame) -> BytesIO:
+    '''Make put_object compatable csv bytes from Dataframe'''
     buf = BytesIO()
     data.write_csv(buf)
     buf.seek(0)
@@ -34,6 +35,7 @@ def write_csv_as_bytes(data: pl.DataFrame) -> BytesIO:
 
 
 def json_bytes(data: pl.DataFrame) -> BytesIO:
+    '''Make put_object compatable json bytes from Dataframe'''
     buf = BytesIO()
     data.write_json(buf)
     buf.seek(0)
@@ -41,6 +43,7 @@ def json_bytes(data: pl.DataFrame) -> BytesIO:
 
 
 def parquet_bytes(data: pl.DataFrame) -> BytesIO:
+    '''Make put_object compatable parquet bytes from Dataframe'''
     buf = BytesIO()
     data.write_parquet(buf)
     buf.seek(0)
@@ -63,23 +66,42 @@ def large_fake_data():
 
 @pytest.fixture(scope='function')
 def populated_s3(small_fake_data, large_fake_data):
+    '''Return a mocked S3 client with bucket containing test files'''
     bucket = 'test'
     small_df = pl.DataFrame(small_fake_data)
     large_df = pl.DataFrame(large_fake_data)
 
-    small_csv_buf = write_csv_as_bytes(small_df)
-    large_csv_buf = write_csv_as_bytes(large_df)
+    small_csv = csv_bytes(small_df)
+    large_csv = csv_bytes(large_df)
     small_json = json_bytes(small_df)
     large_json = json_bytes(large_df)
-    small_pq = parquet_bytes(small_df)
-    large_pq = parquet_bytes(large_df)
+    small_parquet = parquet_bytes(small_df)
+    large_parquet = parquet_bytes(large_df)
     with mock_aws():
         s3client = boto3.client(service_name='s3', region_name='us-east-1')
         s3client.create_bucket(Bucket=bucket)
-        s3client.put_object(Bucket=bucket, Key="small.csv", Body=small_csv_buf)
-        s3client.put_object(Bucket=bucket, Key="large.csv", Body=large_csv_buf)
-        s3client.put_object(Bucket=bucket, Key="small.json", Body=small_json)
-        s3client.put_object(Bucket=bucket, Key="small.json", Body=large_json)
-        s3client.put_object(Bucket=bucket, Key="small.parquet", Body=small_pq)
-        s3client.put_object(Bucket=bucket, Key="small.parquet", Body=large_pq)
+        s3client.put_object(
+            Bucket=bucket,
+            Key="small.csv",
+            Body=small_csv)
+        s3client.put_object(
+            Bucket=bucket,
+            Key="large.csv",
+            Body=large_csv)
+        s3client.put_object(
+            Bucket=bucket,
+            Key="small.json",
+            Body=small_json)
+        s3client.put_object(
+            Bucket=bucket,
+            Key="large.json",
+            Body=large_json)
+        s3client.put_object(
+            Bucket=bucket,
+            Key="small.parquet",
+            Body=small_parquet)
+        s3client.put_object(
+            Bucket=bucket,
+            Key="large.parquet",
+            Body=large_parquet)
         yield s3client

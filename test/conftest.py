@@ -1,10 +1,15 @@
+import os
+
+import boto3
 import pytest
 from moto import mock_aws
-import boto3
-import os
 
 files_path = os.path.abspath('./test/sample_files')
 
+
+@pytest.fixture(scope='session', autouse=True)
+def faker_session_locale():
+    return ['en_GB']
 
 @pytest.fixture(scope='function')
 def populated_s3():

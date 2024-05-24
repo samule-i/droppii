@@ -2,6 +2,7 @@ import csv
 import json
 import time
 from io import StringIO
+from unittest.mock import patch
 
 import boto3
 import pytest
@@ -56,3 +57,37 @@ def test_processes_1mb_csv_per_minute(populated_s3):
     elapsed = stop - start
     if elapsed > 60:
         pytest.fail('Execution took too long')
+
+
+@mock_aws
+def test_correct_parser_called_for_csv_file(populated_s3):
+    ''' Check that the correct pii field rmover is called for CSV files.
+    '''
+
+    csv_string = """
+        {
+            "s3_uri": "s3://test/small.csv",
+            "pii_fields": ["name", "age", "email"]
+        }
+    """
+    json_string = """
+        {
+            "s3_uri": "s3://test/small.json",
+            "pii_fields": ["name", "age", "email"]
+        }
+    """
+    parquet_string = """
+        {
+            "s3_uri": "s3://test/small.parquet",
+            "pii_fields": ["name", "age", "email"]
+        }
+    """
+
+    with patch("DropPii.DropPii._csv_replace_fields") as mock:
+        anonymize_fields(json_string)
+        anonymize_fields(parquet_string)
+    mock.assert_not_called()
+
+    with patch("DropPii.DropPii._csv_replace_fields") as mock:
+        anonymize_fields(csv_string)
+    mock.assert_called_once()

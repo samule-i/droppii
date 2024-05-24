@@ -33,6 +33,19 @@ def write_csv_as_bytes(data: pl.DataFrame) -> BytesIO:
     return buf
 
 
+def json_bytes(data: pl.DataFrame) -> BytesIO:
+    buf = BytesIO()
+    data.write_json(buf)
+    buf.seek(0)
+    return buf
+
+
+def parquet_bytes(data: pl.DataFrame) -> BytesIO:
+    buf = BytesIO()
+    data.write_parquet(buf)
+    buf.seek(0)
+    return buf
+
 @pytest.fixture(scope='function')
 def small_fake_data(faker):
     random.seed(0)
@@ -55,13 +68,17 @@ def populated_s3(small_fake_data, large_fake_data):
 
     small_csv_buf = write_csv_as_bytes(small_df)
     large_csv_buf = write_csv_as_bytes(large_df)
-
+    small_json = json_bytes(small_df)
+    large_json = json_bytes(large_df)
+    small_pq = parquet_bytes(small_df)
+    large_pq = parquet_bytes(large_df)
     with mock_aws():
         s3client = boto3.client(service_name='s3', region_name='us-east-1')
         s3client.create_bucket(Bucket=bucket)
         s3client.put_object(Bucket=bucket, Key="small.csv", Body=small_csv_buf)
         s3client.put_object(Bucket=bucket, Key="large.csv", Body=large_csv_buf)
-    # with mock_aws():
-    #     s3client.upload_file(f'{files_path}/small.json',
-    #                          Bucket=bucket, Key='small.json')
+        s3client.put_object(Bucket=bucket, Key="small.json", Body=small_json)
+        s3client.put_object(Bucket=bucket, Key="small.json", Body=large_json)
+        s3client.put_object(Bucket=bucket, Key="small.parquet", Body=small_pq)
+        s3client.put_object(Bucket=bucket, Key="small.parquet", Body=large_pq)
         yield s3client

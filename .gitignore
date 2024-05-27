@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Logseq files
+doc/logseq/.recycle
+doc/logseq/bak
+
 # C extensions
 *.so
 

@@ -1,0 +1,29 @@
+### Assumptions
+	- Module will be invoked with a JSON string as an argument
+		- Argument will supply the AWS (S3) URI of a file
+		- Argument will supply the fields to replace
+		- Data records will be supplied with a primary key #research-me
+	- Module will be integrated into an existing code-base
+	- The caller will handle saving the output
+- ### MVP
+	- Process CSV data
+	- Module will create a new file or bytestream object #research-me
+	- Output will be compatable with AWS (S3) [put_object api](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3/client/put_object.html)
+	- Module will output data in the same format as the provided data
+	  id:: 6655e975-de3f-4420-83b1-f0625b5106e4
+- ### Performance
+	- Must be able to process a 1mb file within 1 minute
+- ### Extension
+	- Implementation of other file formats
+		- Prioritize JSON, parquet
+		- Considerations for other project requirements
+			- ((6655e975-de3f-4420-83b1-f0625b5106e4))
+- ### Non-functional
+	- include unit-tests
+	- pep-8 compliant
+	- tested for security vulnerabilities
+	- include documentation
+	- **not** include credentials in the source code
+	- module size should **not** exceed 250mb
+		- To fit within [AWS Lambda limitations](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html)
+-

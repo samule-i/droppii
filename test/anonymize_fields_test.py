@@ -8,7 +8,7 @@ import boto3
 import pytest
 from moto import mock_aws
 
-from DropPii.DropPii import anonymize_fields
+from droppii.droppii import anonymize_fields
 
 
 @mock_aws
@@ -84,11 +84,11 @@ def test_correct_parser_called_for_csv_file(populated_s3):
         }
     """
 
-    with patch("DropPii.DropPii._csv_replace_fields") as mock:
+    with patch("droppii.droppii._csv_replace_fields") as mock:
         anonymize_fields(json_string)
         anonymize_fields(parquet_string)
     mock.assert_not_called()
 
-    with patch("DropPii.DropPii._csv_replace_fields") as mock:
+    with patch("droppii.droppii._csv_replace_fields") as mock:
         anonymize_fields(csv_string)
     mock.assert_called_once()

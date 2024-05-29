@@ -41,6 +41,7 @@ def test_csv_returns_csv(populated_s3):
     bytes_keys = [row for row in bytes_reader][0]
     assert bytes_keys == original_keys
 
+@pytest.mark.slow
 @mock_aws
 def test_processes_1mb_csv_per_minute(populated_s3):
     '''Generate a large dataset and checks runtime for anonymize_fields'''

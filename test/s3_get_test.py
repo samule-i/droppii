@@ -1,7 +1,7 @@
 import pytest
 from moto import mock_aws
 
-from DropPii.s3_get import s3_get
+from droppii.s3_get import s3_get
 
 
 @mock_aws

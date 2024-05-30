@@ -1,5 +1,5 @@
 [project]
-name = "DropPii"
+name = "droppii"
 version = "0.1"
 description = "General purpose tool to process data from S3 and anonymize fields containing personally identifiable information."
 requires-python = ">=3.11"
@@ -11,3 +11,6 @@ dev = ["autopep8", "bandit", "flake8", "moto", "safety", "pytest", "pytest-cov",
 [build-system]
 requires = ["setuptools>=65.0"]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+markers = ["slow: marks test as slow, deselect with '-m \"not slow\"'"]

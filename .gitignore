@@ -4,8 +4,8 @@ __pycache__/
 *$py.class
 
 # Logseq files
-doc/logseq/.recycle
-doc/logseq/bak
+doc/**/.recycle
+doc/**/bak
 
 # C extensions
 *.so

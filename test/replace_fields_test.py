@@ -13,7 +13,8 @@ def test_replaces_all_values_for_fields(small_fake_data):
 
 
 def test_doesnt_modify_other_field_values(small_fake_data):
-    '''Any value under a key NOT specified in `private_keys` should be untouched'''
+    '''Any value under a key NOT specified in `private_keys`
+    should be untouched'''
     original_df = pl.DataFrame(small_fake_data)
     result_df = replace_fields(original_df, ["age", "email"])
     fake_keys = [k for k in small_fake_data[0].keys()]

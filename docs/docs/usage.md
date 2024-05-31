@@ -58,11 +58,11 @@ import droppii
 file_bytes = droppii.s3_get('s3://bucket/file.csv')
 ```
 
-## replace_fields
+## replace_df_fields
 Return a dataframe with all columns listed in `private_keys` replaced with "***"
 
 ```
-replace_fields(df: polars.DataFrame, private_keys: list[str]) -> polars.Dataframe
+replace_df_fields(df: polars.DataFrame, private_keys: list[str]) -> polars.Dataframe
 ```
 
 ### Arguments
@@ -84,7 +84,7 @@ df = polars.DataFrame({
     "B":["1","2","3"]
 })
 
-new_df = droppii.replace_fields(df, ["B"])
+new_df = droppii.replace_df_fields(df, ["B"])
 ```
 ```
 ┌─────┬─────┐

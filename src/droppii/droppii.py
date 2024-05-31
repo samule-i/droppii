@@ -5,7 +5,7 @@ import polars as pl
 from . import s3_get
 
 
-def replace_fields(df: pl.DataFrame, private_keys: list[str]) -> pl.DataFrame:
+def replace_df_fields(df: pl.DataFrame, private_keys: list[str]) -> pl.DataFrame:
     '''Return a dataframe with all columns listed in `private_keys`
     replaced with "***"'''
     if not isinstance(df, pl.DataFrame):

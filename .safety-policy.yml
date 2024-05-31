@@ -1,0 +1,11 @@
+security:
+    ignore-cvss-severity-below: 0 # A severity number between 0 and 10. Some helpful reference points: 9=ignore all vulnerabilities except CRITICAL severity. 7=ignore all vulnerabilities except CRITICAL 
+    ignore-cvss-unknown-severity: False
+    ignore-vulnerabilities:
+        67599:
+            reason: 'Introduced by pip. Not using private repositories'
+            expires: '2025-01-01'
+        70612:
+            reason: 'Introduced by mkdocs. Not currently using templates, and not using jinja2 directly'
+            expires: '2025-01-01'
+    continue-on-vulnerability-error: False

@@ -42,7 +42,7 @@ init: create-environment install
 pytest:
 	$(call venv_run, pytest -v)
 safety:
-	$(call venv_run, safety check --ignore 67599)
+	$(call venv_run, safety check)
 bandit:
 	$(call venv_run, bandit -r src/)
 flake:

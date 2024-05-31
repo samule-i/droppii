@@ -1,5 +1,6 @@
 import polars as pl
 import polars.testing as pl_testing
+import pytest
 
 from droppii.droppii import replace_fields
 
@@ -22,3 +23,10 @@ def test_doesnt_modify_other_field_values(small_fake_data):
     for key in unmodified_keys:
         pl_testing.assert_series_equal(result_df[key], original_df[key])
     pl_testing.assert_series_not_equal(result_df["age"], original_df["age"])
+
+
+def test_raises_if_key_doesnt_exist(small_fake_data):
+    '''If key does not exist in dataset, raise an error'''
+    original_df = pl.DataFrame(small_fake_data)
+    with pytest.raises(pl.ColumnNotFoundError):
+        replace_fields(original_df, ["no_key"])

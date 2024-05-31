@@ -5,10 +5,6 @@ import polars as pl
 from . import s3_get
 
 
-def _csv_replace_fields():
-    pass
-
-
 def replace_fields(df: pl.DataFrame, private_keys: list[str]) -> pl.DataFrame:
     '''Return a dataframe with all columns listed in `private_keys`
     replaced with "***"'''
@@ -35,5 +31,5 @@ def hide_fields(json_string: str) -> bytes:
     s3_uri: str = params['s3_uri']
     data = s3_get.s3_get(s3_uri)
     if s3_uri.endswith(".csv"):
-        _csv_replace_fields()
+        pl.read_csv(data)
     return data

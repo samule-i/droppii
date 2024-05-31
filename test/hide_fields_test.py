@@ -12,20 +12,13 @@ from droppii.droppii import hide_fields
 
 
 @mock_aws
-def test_return_value_is_compatable_with_s3():
-    region = 'us-east-1'
-    bucket = 'test-bucket'
-    key = 'test-key.csv'
-
-    args = {"s3_uri": f's3://{bucket}/{key}', "private_keys": []}
+def test_return_value_is_compatable_with_s3(populated_s3):
+    args = {"s3_uri": f's3://test/small.csv', "private_keys": []}
     json_string = json.dumps(args)
 
-    s3client = boto3.client(service_name='s3', region_name=region)
-    s3client.create_bucket(Bucket=bucket)
-    s3client.put_object(Bucket=bucket, Key=key, Body='')
-
     file_bytes = hide_fields(json_string)
-    response = s3client.put_object(Bucket=bucket, Key=key, Body=file_bytes)
+    response = populated_s3.put_object(
+        Bucket='test', Key='new.csv', Body=file_bytes)
     assert len(response) > 0
 
 
@@ -85,11 +78,11 @@ def test_correct_parser_called_for_csv_file(populated_s3):
         }
     """
 
-    with patch("droppii.droppii._csv_replace_fields") as mock:
+    with patch("polars.read_csv") as mock:
         hide_fields(json_string)
         hide_fields(parquet_string)
     mock.assert_not_called()
 
-    with patch("droppii.droppii._csv_replace_fields") as mock:
+    with patch("polars.read_csv") as mock:
         hide_fields(csv_string)
     mock.assert_called_once()

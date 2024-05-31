@@ -1,4 +1,5 @@
 site_name: droppii docs
 nav:
   - Home: index.md
+  - Developers: developers.md
 theme: readthedocs

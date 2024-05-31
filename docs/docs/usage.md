@@ -40,3 +40,20 @@ Key = "anonymized_file.csv",
 Body = anonymized_bytes
 )
 ```
+## droppii.s3_get()
+```
+s3_get(s3_uri: str) -> bytes 
+```
+
+### Arguments
+`s3_uri` is a string leading to a file hosted on s3, eg. `s3://your_bucket/file_key.csv`
+
+### Return
+Returns unmodified file bytes from the file hosted on s3
+
+### Example
+```python
+import droppii
+
+file_bytes = droppii.s3_get('s3://bucket/file.csv')
+```

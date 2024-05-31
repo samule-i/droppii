@@ -1,0 +1,4 @@
+site_name: droppii docs
+nav:
+  - Home: index.md
+theme: readthedocs

@@ -1,6 +1,6 @@
 import json
 
-from .s3_get import s3_get
+from . import s3_get
 
 
 def _csv_replace_fields():

@@ -2,7 +2,7 @@ import polars as pl
 import polars.testing as pl_testing
 import pytest
 
-from droppii.droppii import replace_df_fields
+from droppii import replace_df_fields
 
 
 def test_replaces_all_values_for_fields(small_fake_data):

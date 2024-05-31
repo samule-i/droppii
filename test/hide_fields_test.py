@@ -4,16 +4,15 @@ import time
 from io import StringIO
 from unittest.mock import patch
 
-import boto3
 import pytest
 from moto import mock_aws
 
-from droppii.droppii import hide_fields
+from droppii import hide_fields
 
 
 @mock_aws
 def test_return_value_is_compatable_with_s3(populated_s3):
-    args = {"s3_uri": f's3://test/small.csv', "private_keys": []}
+    args = {"s3_uri": 's3://test/small.csv', "private_keys": []}
     json_string = json.dumps(args)
 
     file_bytes = hide_fields(json_string)

@@ -42,7 +42,7 @@ Body = anonymized_bytes
 ```
 ## droppii.s3_get()
 ```
-s3_get(s3_uri: str) -> bytes 
+droppii.s3_get(s3_uri: str) -> bytes 
 ```
 
 ### Arguments
@@ -62,7 +62,7 @@ file_bytes = droppii.s3_get('s3://bucket/file.csv')
 Return a dataframe with all columns listed in `private_keys` replaced with "***"
 
 ```
-replace_df_fields(df: polars.DataFrame, private_keys: list[str]) -> polars.Dataframe
+droppii.replace_df_fields(df: polars.DataFrame, private_keys: list[str]) -> polars.Dataframe
 ```
 
 ### Arguments
@@ -77,7 +77,7 @@ Returns a modified polars DataFrame with obfuscated values
 ```python
 import polars
 
-from droppii import droppii
+import droppii
 
 df = polars.DataFrame({
     "A":["1","2","3"],

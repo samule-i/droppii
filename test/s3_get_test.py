@@ -20,5 +20,5 @@ def test_returns_body_of_s3_file():
     client.create_bucket(Bucket='test')
     client.put_object(Bucket='test', Key='test', Body=test_data)
 
-    retrieved_data = s3_get.s3_get('s3://test/test')
+    retrieved_data = s3_get('s3://test/test')
     assert retrieved_data.decode() == test_data

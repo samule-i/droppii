@@ -64,6 +64,24 @@ def large_fake_data():
     return fake_data
 
 
+@pytest.fixture(scope='session')
+def fake_csv_bytes(small_fake_data):
+    df = pl.DataFrame(small_fake_data)
+    return csv_bytes(df)
+
+
+@pytest.fixture(scope='session')
+def fake_json_bytes(small_fake_data):
+    df = pl.DataFrame(small_fake_data)
+    return json_bytes(df)
+
+
+@pytest.fixture(scope='session')
+def fake_parquet_bytes(small_fake_data):
+    df = pl.DataFrame(small_fake_data)
+    return parquet_bytes(df)
+
+
 @pytest.fixture(scope='function')
 def populated_s3(small_fake_data, large_fake_data):
     '''Return a mocked S3 client with bucket containing test files'''

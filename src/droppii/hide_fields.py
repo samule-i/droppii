@@ -1,9 +1,7 @@
 import json
-from io import BytesIO
+from os import path
 
-import polars as pl
-
-from .replace_df_fields import replace_df_fields
+from ._replace_bytes_values import _replace_bytes_values
 from .s3_get import s3_get
 
 
@@ -19,24 +17,10 @@ def hide_fields(json_string: str) -> bytes:
 
     ``private_keys`` must be a list containing the keys to be replaced
     '''
-    privatized_file: BytesIO = BytesIO()
     params = json.loads(json_string)
     s3_uri: str = params['s3_uri']
     private_keys: list[str] = params["private_keys"]
     data = s3_get(s3_uri)
-    if s3_uri.endswith(".csv"):
-        df = pl.read_csv(data)
-        df = replace_df_fields(df, private_keys)
-        df.write_csv(privatized_file)
-    elif s3_uri.endswith(".json"):
-        df = pl.read_json(data)
-        df = replace_df_fields(df, private_keys)
-        df.serialize(privatized_file)
-    elif s3_uri.endswith(".parquet"):
-        pass
-    else:
-        raise ValueError(
-            f'Unexpected file format supplied in s3_uri: {s3_uri}')
-    privatized_file.seek(0)
-    privatized_bytes = privatized_file.read()
+    file_format = path.splitext(s3_uri)[1][1:]
+    privatized_bytes = _replace_bytes_values(data, private_keys, file_format)
     return privatized_bytes

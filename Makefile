@@ -51,7 +51,9 @@ coverage:
 	$(call venv_run, coverage run --omit .venv -m pytest && coverage report -m --fail-under=$(MINIMUM_COVERAGE))
 autopep8:
 	$(call venv_run, autopep8  --in-place --recursive src/*)
-test: pytest coverage
+pkg_size:
+	test/package_size.sh
+test: pytest coverage pkg_size
 standards: autopep8 bandit flake safety
 
 clean:

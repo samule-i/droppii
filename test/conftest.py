@@ -26,28 +26,28 @@ def generate_fake_data(rows):
     return fake_data
 
 
-def csv_bytes(data: pl.DataFrame) -> BytesIO:
+def csv_bytes(data: pl.DataFrame) -> bytes:
     '''Make put_object compatable csv bytes from Dataframe'''
     buf = BytesIO()
     data.write_csv(buf)
     buf.seek(0)
-    return buf
+    return buf.read()
 
 
-def json_bytes(data: pl.DataFrame) -> BytesIO:
+def json_bytes(data: pl.DataFrame) -> bytes:
     '''Make put_object compatable json bytes from Dataframe'''
     buf = BytesIO()
     data.serialize(buf)
     buf.seek(0)
-    return buf
+    return buf.read()
 
 
-def parquet_bytes(data: pl.DataFrame) -> BytesIO:
+def parquet_bytes(data: pl.DataFrame) -> bytes:
     '''Make put_object compatable parquet bytes from Dataframe'''
     buf = BytesIO()
     data.write_parquet(buf)
     buf.seek(0)
-    return buf
+    return buf.read()
 
 
 @pytest.fixture(scope='session')
@@ -65,19 +65,19 @@ def large_fake_data():
 
 
 @pytest.fixture(scope='session')
-def fake_csv_bytes(small_fake_data):
+def fake_csv_bytes(small_fake_data) -> bytes:
     df = pl.DataFrame(small_fake_data)
     return csv_bytes(df)
 
 
 @pytest.fixture(scope='session')
-def fake_json_bytes(small_fake_data):
+def fake_json_bytes(small_fake_data) -> bytes:
     df = pl.DataFrame(small_fake_data)
     return json_bytes(df)
 
 
 @pytest.fixture(scope='session')
-def fake_parquet_bytes(small_fake_data):
+def fake_parquet_bytes(small_fake_data) -> bytes:
     df = pl.DataFrame(small_fake_data)
     return parquet_bytes(df)
 

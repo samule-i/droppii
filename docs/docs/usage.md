@@ -11,7 +11,7 @@ droppii.hide_values(
 The JSON string **must** contain the keys:
 
 - s3_uri: A string to the s3 file to be anonymized
-    - Provided AWS (S3) file **must** be in CSV format.
+    - Provided AWS (S3) file **must** be in csv, json or parquet format.
 - private_keys: `[]` A list of strings containing the keys to be anonymized
 
 ### Return value

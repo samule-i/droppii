@@ -8,7 +8,7 @@ Droppii is a python module to process data from an AWS (S3) bucket and anonymize
 ## Quickstart
 Most users will only need to use `droppii.hide_values`, which takes a JSON string in the format of `{s3_uri:"s3://...", private_keys:["key1", "key2"]}` and returns a file-like bytes in the same format as file at the s3 location provided.
 
-Currently supports CSV file format as input.
+Currently supports csv, json or parquet file format as input.
 ```python
 import droppii
 import json

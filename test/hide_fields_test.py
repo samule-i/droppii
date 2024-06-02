@@ -120,3 +120,12 @@ def test_csv_values_are_unmodified(populated_s3):
     new_df = pl.read_csv(new_csv)
     for key in unmodified_keys:
         pl_testing.assert_series_equal(new_df[key], old_df[key])
+
+
+@mock_aws
+def test_raises_on_invalid_file_type(populated_s3):
+    '''Should raise an error if not passed an expected file format'''
+    populated_s3.put_object(Bucket='test', Key='small.pdf', Body='_')
+    argument = '{"s3_uri":"s3://test/small.pdf", "private_keys":[]}'
+    with pytest.raises(ValueError):
+        hide_fields(argument)

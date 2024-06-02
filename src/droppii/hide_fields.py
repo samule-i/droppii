@@ -28,6 +28,13 @@ def hide_fields(json_string: str) -> bytes:
         df = pl.read_csv(data)
         df = replace_df_fields(df, private_keys)
         df.write_csv(privatized_file)
+    elif s3_uri.endswith(".json"):
+        pass
+    elif s3_uri.endswith(".parquet"):
+        pass
+    else:
+        raise ValueError(
+            f'Unexpected file format supplied in s3_uri: {s3_uri}')
     privatized_file.seek(0)
     privatized_bytes = privatized_file.read()
     return privatized_bytes

@@ -92,3 +92,26 @@ def test_not_returns_original_file(populated_s3):
     returned = hide_fields(json.dumps(argument))
 
     assert returned is not s3_file
+
+
+@mock_aws
+def test_raises_on_no_file_ext(populated_s3):
+    populated_s3.put_object(Bucket='test', Key='small', Body='_')
+    argument = {
+        "s3_uri": "s3://test/small",
+        "private_keys": ["age", "email"]
+    }
+    with pytest.raises(ValueError):
+        hide_fields(json.dumps(argument))
+
+
+def test_doesnt_error_on_mixed_case_filename(populated_s3, fake_csv_bytes):
+    populated_s3.put_object(
+        Bucket='test',
+        Key='SmALl.CsV',
+        Body=fake_csv_bytes)
+    argument = {
+        "s3_uri": "s3://test/SmALl.CsV",
+        "private_keys": ["age", "email"]
+    }
+    hide_fields(json.dumps(argument))

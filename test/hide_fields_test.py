@@ -63,28 +63,28 @@ def test_correct_parser_called_for_csv_file(populated_s3):
     csv_string = """
         {
             "s3_uri": "s3://test/small.csv",
-            "private_keys": ["name", "age", "email"]
+            "private_keys": []
         }
     """
     json_string = """
         {
             "s3_uri": "s3://test/small.json",
-            "private_keys": ["name", "age", "email"]
+            "private_keys": []
         }
     """
     parquet_string = """
         {
             "s3_uri": "s3://test/small.parquet",
-            "private_keys": ["name", "age", "email"]
+            "private_keys": []
         }
     """
-
-    with patch("polars.read_csv") as mock:
+    fake_df = pl.DataFrame({"_": ["_"]})
+    with patch("polars.read_csv", return_value=fake_df) as mock:
         hide_fields(json_string)
         hide_fields(parquet_string)
     mock.assert_not_called()
 
-    with patch("polars.read_csv") as mock:
+    with patch("polars.read_csv", return_value=fake_df) as mock:
         hide_fields(csv_string)
     mock.assert_called_once()
 

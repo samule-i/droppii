@@ -37,7 +37,7 @@ def csv_bytes(data: pl.DataFrame) -> BytesIO:
 def json_bytes(data: pl.DataFrame) -> BytesIO:
     '''Make put_object compatable json bytes from Dataframe'''
     buf = BytesIO()
-    data.write_json(buf)
+    data.serialize(buf)
     buf.seek(0)
     return buf
 

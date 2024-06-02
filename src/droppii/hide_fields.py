@@ -1,8 +1,10 @@
 import json
+from io import BytesIO
 
 import polars as pl
 
-from droppii import s3_get
+from .replace_df_fields import replace_df_fields
+from .s3_get import s3_get
 
 
 def hide_fields(json_string: str) -> bytes:
@@ -17,9 +19,15 @@ def hide_fields(json_string: str) -> bytes:
 
     ``private_keys`` must be a list containing the keys to be replaced
     '''
+    privatized_file: BytesIO = BytesIO()
     params = json.loads(json_string)
     s3_uri: str = params['s3_uri']
-    data = s3_get.s3_get(s3_uri)
+    private_keys: list[str] = params["private_keys"]
+    data = s3_get(s3_uri)
     if s3_uri.endswith(".csv"):
-        pl.read_csv(data)
-    return data
+        df = pl.read_csv(data)
+        df = replace_df_fields(df, private_keys)
+        df.write_csv(privatized_file)
+    privatized_file.seek(0)
+    privatized_bytes = privatized_file.read()
+    return privatized_bytes

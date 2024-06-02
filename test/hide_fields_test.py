@@ -4,6 +4,8 @@ import time
 from io import StringIO
 from unittest.mock import patch
 
+import polars as pl
+import polars.testing as pl_testing
 import pytest
 from moto import mock_aws
 
@@ -85,3 +87,34 @@ def test_correct_parser_called_for_csv_file(populated_s3):
     with patch("polars.read_csv") as mock:
         hide_fields(csv_string)
     mock.assert_called_once()
+
+
+@mock_aws
+def test_csv_values_are_replaced(populated_s3):
+    '''All values for all keys specified should be replaced in returned data'''
+    argument = {
+        "s3_uri": "s3://test/small.csv",
+        "private_keys": ["age", "email"]
+    }
+    new_csv = hide_fields(json.dumps(argument))
+    df = pl.read_csv(new_csv)
+    assert all(k == "***" for k in df["age"])
+    assert all(k == "***" for k in df["email"])
+
+
+@mock_aws
+def test_csv_values_are_unmodified(populated_s3):
+    '''All values for all keys not specified should be unmodified
+    in returned data'''
+    argument = {
+        "s3_uri": "s3://test/small.csv",
+        "private_keys": ["age", "email"]
+    }
+    s3_file_bytes = populated_s3.get_object(
+        Bucket="test",
+        Key="small.csv")["Body"].read()
+    old_df = pl.read_csv(s3_file_bytes)
+    new_csv = hide_fields(json.dumps(argument))
+    new_df = pl.read_csv(new_csv)
+    pl_testing.assert_series_not_equal(new_df["email"], old_df["email"])
+    pl_testing.assert_series_equal(new_df["score"], old_df["score"])

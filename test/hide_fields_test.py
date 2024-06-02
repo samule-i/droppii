@@ -98,8 +98,8 @@ def test_csv_values_are_replaced(populated_s3):
     }
     new_csv = hide_fields(json.dumps(argument))
     df = pl.read_csv(new_csv)
-    assert all(k == "***" for k in df["age"])
-    assert all(k == "***" for k in df["email"])
+    for key in argument["private_keys"]:
+        assert all(k == "***" for k in df[key])
 
 
 @mock_aws
@@ -114,7 +114,9 @@ def test_csv_values_are_unmodified(populated_s3):
         Bucket="test",
         Key="small.csv")["Body"].read()
     old_df = pl.read_csv(s3_file_bytes)
+    unmodified_keys = [
+        k for k in old_df.columns if k not in argument["private_keys"]]
     new_csv = hide_fields(json.dumps(argument))
     new_df = pl.read_csv(new_csv)
-    pl_testing.assert_series_not_equal(new_df["email"], old_df["email"])
-    pl_testing.assert_series_equal(new_df["score"], old_df["score"])
+    for key in unmodified_keys:
+        pl_testing.assert_series_equal(new_df[key], old_df[key])

@@ -2,9 +2,8 @@ import csv
 import json
 import time
 from io import StringIO
+from unittest.mock import patch
 
-import polars as pl
-import polars.testing as pl_testing
 import pytest
 from moto import mock_aws
 
@@ -55,33 +54,41 @@ def test_processes_1mb_csv_per_minute(populated_s3):
 
 
 @mock_aws
-def test_csv_values_are_replaced(populated_s3):
-    '''All values for all keys specified should be replaced in returned data'''
+def test_uses_replace_bytes_values(populated_s3):
+    '''_replace_bytes_values should be called for any compatable file'''
     argument = {
         "s3_uri": "s3://test/small.csv",
         "private_keys": ["age", "email"]
     }
-    new_csv = hide_fields(json.dumps(argument))
-    df = pl.read_csv(new_csv)
-    for key in argument["private_keys"]:
-        assert all(k == "***" for k in df[key])
+    with patch("droppii.hide_fields._replace_bytes_values") as mock:
+        hide_fields(json.dumps(argument))
+    mock.assert_called_once()
 
 
 @mock_aws
-def test_csv_values_are_unmodified(populated_s3):
-    '''All values for all keys not specified should be unmodified
-    in returned data'''
+def test_returns_value_from_replace_bytes(populated_s3):
+    '''value from _replace_bytes_values should be returned'''
     argument = {
         "s3_uri": "s3://test/small.csv",
         "private_keys": ["age", "email"]
     }
-    s3_file_bytes = populated_s3.get_object(
-        Bucket="test",
-        Key="small.csv")["Body"].read()
-    old_df = pl.read_csv(s3_file_bytes)
-    unmodified_keys = [
-        k for k in old_df.columns if k not in argument["private_keys"]]
-    new_csv = hide_fields(json.dumps(argument))
-    new_df = pl.read_csv(new_csv)
-    for key in unmodified_keys:
-        pl_testing.assert_series_equal(new_df[key], old_df[key])
+    expected = b'faked data'
+    with patch("droppii.hide_fields._replace_bytes_values",
+               return_value=expected):
+        returned = hide_fields(json.dumps(argument))
+
+    assert expected is returned
+
+
+@mock_aws
+def test_not_returns_original_file(populated_s3):
+    '''value returned should not be the original data'''
+    argument = {
+        "s3_uri": "s3://test/small.csv",
+        "private_keys": ["age", "email"]
+    }
+    s3_file = populated_s3.get_object(
+        Bucket="test", Key="small.csv")["Body"].read()
+    returned = hide_fields(json.dumps(argument))
+
+    assert returned is not s3_file

@@ -29,7 +29,9 @@ def hide_fields(json_string: str) -> bytes:
         df = replace_df_fields(df, private_keys)
         df.write_csv(privatized_file)
     elif s3_uri.endswith(".json"):
-        pass
+        df = pl.read_json(data)
+        df = replace_df_fields(df, private_keys)
+        df.serialize(privatized_file)
     elif s3_uri.endswith(".parquet"):
         pass
     else:

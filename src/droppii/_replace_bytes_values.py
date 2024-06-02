@@ -19,6 +19,11 @@ def _replace_bytes_values(data: bytes,
             df = pl.read_json(data)
         except RuntimeError:
             raise ValueError("Invalid json file")
+    elif data_format == "parquet":
+        try:
+            df = pl.read_parquet(data)
+        except pl.exceptions.ComputeError:
+            raise ValueError("Invalid Parquet file")
     else:
         raise TypeError("Invalid file provided")
 
@@ -31,6 +36,8 @@ def _replace_bytes_values(data: bytes,
         new_df.write_csv(buf)
     elif data_format == "json":
         new_df.serialize(buf)
+    elif data_format == "parquet":
+        new_df.write_parquet(buf)
     else:
         raise TypeError("Invalid file provided")
 

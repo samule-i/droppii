@@ -14,7 +14,7 @@ def test_values_are_replaced(fake_csv_bytes):
         fake_csv_bytes, private_keys, "csv")
     df = pl.read_csv(privatized_csv)
     for key in private_keys:
-        assert all(k == "***" for k in df[key])
+        assert all([k == "***" for k in df[key]])
 
 
 def test_values_are_unmodified(fake_csv_bytes,

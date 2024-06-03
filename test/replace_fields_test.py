@@ -37,3 +37,11 @@ def test_raises_if_not_passed_dataframe():
     not_df = ["a", "b"]
     with pytest.raises(TypeError):
         replace_df_fields(not_df, ["keys"])  # type: ignore
+
+
+def test_result_has_same_shape(small_fake_data):
+    '''Raise if shape of df changes'''
+    original_df = pl.DataFrame(small_fake_data)
+    returned_df = replace_df_fields(
+        original_df, [k for k in small_fake_data[0].keys()])
+    assert original_df.shape == returned_df.shape

@@ -11,7 +11,7 @@ from moto import mock_aws
 files_path = os.path.abspath('./test/sample_files')
 
 
-def generate_fake_data(rows):
+def generate_fake_data(rows) -> list[dict]:
     faker = Faker(['en_GB'])
     fake_data = [
         {

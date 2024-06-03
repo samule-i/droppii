@@ -5,7 +5,7 @@ from ._replace_bytes_values import _replace_bytes_values
 from .s3_get import s3_get
 
 
-def hide_fields(json_string: str) -> bytes:
+def censor(json_string: str) -> bytes:
     '''Replaces values in a file hosted on S3 based on keys present
     in ``private_keys``.
     returning bytes that can be passed to ``put_object``.

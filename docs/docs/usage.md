@@ -1,13 +1,13 @@
 # Usage
-## droppii.hide_values
+## droppii.censor
 ```
-droppii.hide_values(
+droppii.censor(
     json_params:str
 ) -> bytes
 ```
 ### arguments
 
-`hide_values` takes a JSON string as it's only argument.
+`censor` takes a JSON string as it's only argument.
 The JSON string **must** contain the keys:
 
 - s3_uri: A string to the s3 file to be anonymized
@@ -31,7 +31,7 @@ json_params = json.dumps({
     "s3_uri" = "s3://your-bucket/your_file.csv",
     "keys" = ["name", "address", "email_address"]
 })
-anonymized_bytes = droppii.hide_values(json_params)
+anonymized_bytes = droppii.censor(json_params)
 
 s3client = boto3.Client("s3")
 s3client.put_object(

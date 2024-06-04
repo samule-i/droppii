@@ -4,6 +4,7 @@ import time
 from io import StringIO
 from unittest.mock import patch
 
+import polars as pl
 import pytest
 from moto import mock_aws
 
@@ -32,6 +33,13 @@ def test_csv_returns_csv(populated_s3):
     bytes_reader = csv.reader(StringIO(csv_result))
     bytes_keys = [row for row in bytes_reader][0]
     assert bytes_keys == original_keys
+
+
+@mock_aws
+def test_parquet_returns_as_parquet(populated_s3):
+    argument = {"s3_uri": "s3://test/small.parquet", "private_keys": []}
+    returned = censor(json.dumps(argument))
+    pl.read_parquet(returned)
 
 
 @pytest.mark.slow

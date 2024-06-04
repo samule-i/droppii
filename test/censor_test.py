@@ -111,6 +111,7 @@ def test_raises_on_no_file_ext(populated_s3):
         censor(json.dumps(argument))
 
 
+@mock_aws
 def test_doesnt_error_on_mixed_case_filename(populated_s3, fake_csv_bytes):
     populated_s3.put_object(
         Bucket='test',

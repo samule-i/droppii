@@ -1,0 +1,26 @@
+name: Create releases
+on:
+  push:
+    tags:
+      - 'v**'
+jobs:
+  build-dist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: install dependencies
+        run: pip install build
+      - name: set pyroject version
+        run: sed -i -E '/version = /s/v[0-9]+\.[0-9]+\.[0-9]+/${{ github.ref_name }}/g' pyproject.toml
+      - name: build dist
+        run: python -m build
+      - name: upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist

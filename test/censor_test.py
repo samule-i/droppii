@@ -36,21 +36,22 @@ def test_csv_returns_csv(populated_s3):
 
 @pytest.mark.slow
 @mock_aws
-def test_processes_1mb_csv_per_minute(populated_s3):
+def test_processes_1mb_per_minute(populated_s3, small_fake_data):
     '''Generate a large dataset and checks runtime for anonymize_fields'''
-    csv_string = """
-        {
-            "s3_uri": "s3://test/large.csv",
-            "private_keys": ["name", "age", "email"]
-        }
-    """
+    pkeys = [key for key in small_fake_data[0].keys()]
+    large_s3_keys = ["large.csv",
+                     "large.json",
+                     "large.parquet"]
+    for key in large_s3_keys:
+        argument = f'''{{"s3_uri":"s3://test/{key}",
+            "private_keys":{json.dumps(pkeys)}}}'''
+        start = time.perf_counter()
+        censor(argument)
+        stop = time.perf_counter()
+        elapsed = stop - start
 
-    start = time.perf_counter()
-    censor(csv_string)
-    stop = time.perf_counter()
-    elapsed = stop - start
-    if elapsed > 60:
-        pytest.fail('Execution took too long')
+        if elapsed > 60:
+            pytest.fail('Execution took too long')
 
 
 @mock_aws

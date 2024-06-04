@@ -45,6 +45,11 @@ def test_processes_1mb_per_minute(populated_s3, small_fake_data):
     for key in large_s3_keys:
         argument = f'''{{"s3_uri":"s3://test/{key}",
             "private_keys":{json.dumps(pkeys)}}}'''
+
+        s3_file = populated_s3.get_object(Bucket='test', Key=key)
+        s3_size_in_MB = s3_file["ContentLength"] / 1_000
+        assert s3_size_in_MB >= 1
+
         start = time.perf_counter()
         censor(argument)
         stop = time.perf_counter()

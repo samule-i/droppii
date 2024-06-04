@@ -1,9 +1,15 @@
 [project]
 name = "droppii"
-version = "0.1"
+version = "v0.0.0"
 description = "General purpose tool to process data from S3 and anonymize fields containing personally identifiable information."
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["polars"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: Unix",
+]
 
 [project.optional-dependencies]
 dev = ["autopep8", "bandit", "flake8", "moto", "safety", "pytest", "pytest-cov", "boto3", "faker"]

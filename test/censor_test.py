@@ -18,7 +18,7 @@ def test_return_value_is_compatable_with_s3(populated_s3):
     file_bytes = censor(json_string)
     response = populated_s3.put_object(
         Bucket='test', Key='new.csv', Body=file_bytes)
-    assert len(response) > 0
+    assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
 
 @mock_aws

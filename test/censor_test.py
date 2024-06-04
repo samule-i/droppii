@@ -42,6 +42,13 @@ def test_parquet_returns_as_parquet(populated_s3):
     pl.read_parquet(returned)
 
 
+@mock_aws
+def test_json_returns_as_json(populated_s3):
+    argument = {"s3_uri": "s3://test/small.json", "private_keys": []}
+    returned = censor(json.dumps(argument))
+    pl.read_json(returned)
+
+
 @pytest.mark.slow
 @mock_aws
 def test_processes_1mb_per_minute(populated_s3, small_fake_data):

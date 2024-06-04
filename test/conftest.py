@@ -60,7 +60,7 @@ def small_fake_data():
 @pytest.fixture(scope='session')
 def large_fake_data():
     random.seed(0)
-    fake_data = generate_fake_data(25_000)
+    fake_data = generate_fake_data(60_000)
     return fake_data
 
 

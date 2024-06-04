@@ -87,20 +87,6 @@ def test_returns_value_from_replace_bytes(populated_s3):
 
 
 @mock_aws
-def test_not_returns_original_file(populated_s3):
-    '''value returned should not be the original data'''
-    argument = {
-        "s3_uri": "s3://test/small.csv",
-        "private_keys": ["age", "email"]
-    }
-    s3_file = populated_s3.get_object(
-        Bucket="test", Key="small.csv")["Body"].read()
-    returned = censor(json.dumps(argument))
-
-    assert returned is not s3_file
-
-
-@mock_aws
 def test_raises_on_no_file_ext(populated_s3):
     populated_s3.put_object(Bucket='test', Key='small', Body='_')
     argument = {

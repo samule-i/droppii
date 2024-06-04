@@ -1,10 +1,9 @@
-import csv
 import json
 import time
-from io import StringIO
 from unittest.mock import patch
 
 import polars as pl
+import polars.testing as pl_testing
 import pytest
 from moto import mock_aws
 
@@ -23,16 +22,15 @@ def test_return_value_is_compatable_with_s3(populated_s3):
 
 
 @mock_aws
-def test_csv_returns_csv(populated_s3):
+def test_csv_returns_as_csv(populated_s3):
     original_file = populated_s3.get_object(Bucket="test", Key="small.csv")
-    original_data = original_file["Body"].read().decode()
-    original_reader = csv.reader(StringIO(original_data))
-    original_keys = [row for row in original_reader][0]
-    csv_string = '{"s3_uri": "s3://test/small.csv", "private_keys": []}'
-    csv_result = censor(csv_string).decode()
-    bytes_reader = csv.reader(StringIO(csv_result))
-    bytes_keys = [row for row in bytes_reader][0]
-    assert bytes_keys == original_keys
+    original_data = original_file["Body"].read()
+    original_df = pl.read_csv(original_data)
+
+    argument = {"s3_uri": "s3://test/small.csv", "private_keys": []}
+    returned = censor(json.dumps(argument))
+    new_df = pl.read_csv(returned)
+    pl_testing.assert_frame_equal(original_df, new_df)
 
 
 @mock_aws

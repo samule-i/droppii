@@ -89,3 +89,18 @@ jobs:
           asset_path: ./dist/droppii-${{ env.PACKAGE_VERSION }}-py3-none-any.whl
           asset_name: droppii-${{ env.PACKAGE_VERSION }}-py3-none-any.whl
           asset_content_type: application/zip
+  pypi-publish:
+    name: upload release to pypi
+    runs-on: ubuntu-latest
+    needs: [build-dist, build-layer]
+    environment: release
+    permissions:
+      id-token: write
+    steps:
+    - name: download dist
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1

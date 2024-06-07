@@ -14,14 +14,14 @@ files_path = os.path.abspath('./test/sample_files')
 def generate_fake_data(rows) -> list[dict]:
     faker = Faker(['en_GB'])
     fake_data = [
-        {
+        {   "_id": num,
             "name": faker.name(),
             "age": random.randint(18, 80),
             "email": faker.email(),
             "score": random.randint(0, 100),
             "owner": random.randint(0, 1),
             "favourite_colour": faker.color()
-        } for _ in range(rows)
+        } for num in range(rows)
     ]
     return fake_data
 

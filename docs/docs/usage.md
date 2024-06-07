@@ -1,4 +1,3 @@
-# Usage
 ## droppii.censor
 ```
 droppii.censor(

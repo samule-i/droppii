@@ -4,6 +4,11 @@ Python module to process data from an AWS (S3) bucket and anonymize personally i
 - [Further-Documentation](https://samule-i.github.io/droppii)
 ___
 # Quickstart
+Install droppii from PyPi
+```sh
+pip install droppii
+```
+
 Most users will only need to use `droppii.censor`, which takes a JSON string in the format of `{s3_uri:"s3://...", private_keys:["key1", "key2"]}` and returns a file-like bytes in the same format as file at the s3 location provided.
 
 Currently supports csv, json or parquet file format as input.

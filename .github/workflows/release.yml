@@ -1,0 +1,106 @@
+name: Create releases
+on:
+  push:
+    tags:
+      - 'v**'
+jobs:
+  build-dist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: install dependencies
+        run: pip install build
+      - name: set pyroject version
+        run: sed -i -E '/version = /s/v[0-9]+\.[0-9]+\.[0-9]+/${{ github.ref_name }}/g' pyproject.toml
+      - name: build dist
+        run: python -m build
+      - name: upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+  build-layer:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    - name: install locally
+      run: pip install . -t python
+    - name: build zip
+      run: zip -r layer.zip ./python
+    - name: upload layer
+      uses: actions/upload-artifact@v4
+      with:
+        name: package-layer
+        path: layer.zip
+  gh-release:
+    runs-on: ubuntu-latest
+    needs: [build-dist, build-layer]
+    permissions:
+      contents: write
+    environment: release
+    steps:
+      - name: download layer
+        uses: actions/download-artifact@v4
+        with:
+          name: package-layer
+          path: ./
+      - name: download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+      - name: Upload AWS layer 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above
+          asset_path: ./layer.zip
+          asset_name: droppii-aws-layer-${{ github.ref_name }}.zip
+          asset_content_type: application/zip
+      - name: Store dist version string
+        run: echo "PACKAGE_VERSION=${GITHUB_REF_NAME:1}">>$GITHUB_ENV
+      - name: Upload dist
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above
+          asset_path: ./dist/droppii-${{ env.PACKAGE_VERSION }}-py3-none-any.whl
+          asset_name: droppii-${{ env.PACKAGE_VERSION }}-py3-none-any.whl
+          asset_content_type: application/zip
+  pypi-publish:
+    name: upload release to pypi
+    runs-on: ubuntu-latest
+    needs: [build-dist, build-layer]
+    environment: release
+    permissions:
+      id-token: write
+    steps:
+    - name: download dist
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1

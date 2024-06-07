@@ -11,7 +11,7 @@ from moto import mock_aws
 files_path = os.path.abspath('./test/sample_files')
 
 
-def generate_fake_data(rows):
+def generate_fake_data(rows) -> list[dict]:
     faker = Faker(['en_GB'])
     fake_data = [
         {
@@ -26,28 +26,28 @@ def generate_fake_data(rows):
     return fake_data
 
 
-def csv_bytes(data: pl.DataFrame) -> BytesIO:
+def csv_bytes(data: pl.DataFrame) -> bytes:
     '''Make put_object compatable csv bytes from Dataframe'''
     buf = BytesIO()
     data.write_csv(buf)
     buf.seek(0)
-    return buf
+    return buf.read()
 
 
-def json_bytes(data: pl.DataFrame) -> BytesIO:
+def json_bytes(data: pl.DataFrame) -> bytes:
     '''Make put_object compatable json bytes from Dataframe'''
     buf = BytesIO()
-    data.write_json(buf)
+    data.serialize(buf)
     buf.seek(0)
-    return buf
+    return buf.read()
 
 
-def parquet_bytes(data: pl.DataFrame) -> BytesIO:
+def parquet_bytes(data: pl.DataFrame) -> bytes:
     '''Make put_object compatable parquet bytes from Dataframe'''
     buf = BytesIO()
     data.write_parquet(buf)
     buf.seek(0)
-    return buf
+    return buf.read()
 
 
 @pytest.fixture(scope='session')
@@ -60,8 +60,26 @@ def small_fake_data():
 @pytest.fixture(scope='session')
 def large_fake_data():
     random.seed(0)
-    fake_data = generate_fake_data(25_000)
+    fake_data = generate_fake_data(60_000)
     return fake_data
+
+
+@pytest.fixture(scope='session')
+def fake_csv_bytes(small_fake_data) -> bytes:
+    df = pl.DataFrame(small_fake_data)
+    return csv_bytes(df)
+
+
+@pytest.fixture(scope='session')
+def fake_json_bytes(small_fake_data) -> bytes:
+    df = pl.DataFrame(small_fake_data)
+    return json_bytes(df)
+
+
+@pytest.fixture(scope='session')
+def fake_parquet_bytes(small_fake_data) -> bytes:
+    df = pl.DataFrame(small_fake_data)
+    return parquet_bytes(df)
 
 
 @pytest.fixture(scope='function')

@@ -4,7 +4,7 @@ version = "v0.0.0"
 description = "General purpose tool to process data from S3 and anonymize fields containing personally identifiable information."
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["polars"]
+dependencies = ["boto3","polars"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: Apache Software License",
@@ -12,7 +12,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["autopep8", "bandit", "flake8", "moto", "safety", "pytest", "pytest-cov", "boto3", "faker"]
+dev = ["autopep8", "bandit", "flake8", "moto", "safety", "pytest", "pytest-cov", "faker"]
 
 [build-system]
 requires = ["setuptools>=65.0"]

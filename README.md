@@ -15,7 +15,7 @@ import droppii
 import boto3
 
 json_params = json.dumps({
-    "s3_uri" = "s3://your-bucket/your_file.csv",
+  "s3_uri" = "s3://your-bucket/your_file.csv",
 	"private_keys" = ["name", "address", "email_address"]
 })
 anonymized_bytes = droppii.censor(json_params)

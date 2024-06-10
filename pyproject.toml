@@ -12,7 +12,17 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["autopep8", "bandit", "flake8", "moto", "safety", "pytest", "pytest-cov", "faker"]
+dev = [
+    "autopep8",
+    "bandit",
+    "flake8",
+    "mkdocs",
+    "moto",
+    "safety",
+    "pytest",
+    "pytest-cov",
+    "Faker"
+    ]
 
 [build-system]
 requires = ["setuptools>=65.0"]

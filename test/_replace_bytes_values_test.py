@@ -82,3 +82,8 @@ def test_raises_on_parsing_incorrectly_as_json(fake_csv_bytes):
 def test_raises_on_parsing_incorrectly_as_parquet(fake_csv_bytes):
     with pytest.raises(ValueError):
         _replace_bytes_values(fake_csv_bytes, [], "parquet")
+
+
+def test_json_returned_in_same_format(fake_json_bytes):
+    result = _replace_bytes_values(fake_json_bytes, [], "json")
+    assert result == fake_json_bytes

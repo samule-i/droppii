@@ -35,7 +35,7 @@ def _replace_bytes_values(data: bytes,
     if data_format == "csv":
         new_df.write_csv(buf)
     elif data_format == "json":
-        new_df.serialize(buf)
+        new_df.write_json(buf, row_oriented=True)
     elif data_format == "parquet":
         new_df.write_parquet(buf)
     else:

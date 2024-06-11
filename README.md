@@ -1,7 +1,17 @@
-# droppii
-Python module to process data from an AWS (S3) bucket and anonymize personally identifiable information, returning data in the same format as provided.
 - [PyPi-repository](https://pypi.org/project/droppii)  
 - [Further-Documentation](https://samule-i.github.io/droppii)
+
+# droppii
+Droppii is a python module to process data from an AWS (S3) bucket and anonymize personally identifiable information **non-recursively**, returning data in the same format as provided.
+
+Droppii intends to remove values from **top-level** columns only, any nested objects or string representations of objects will **not** be processed.
+
+example with "email" as key:
+
+|_id|email|contacts|
+|---|---|---|
+|1|***|{name: "Sue", email:exposed@email.com}|
+|2|***|{name: "Alan, email:pii@email.com}|
 ___
 
 # CLI usage

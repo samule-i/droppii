@@ -8,9 +8,9 @@ from .replace_df_fields import replace_df_fields
 def _replace_bytes_values(data: bytes,
                           private_keys: list[str],
                           data_format: str) -> bytes:
-    '''Replace all values for all keys listed in `private_keys`
+    """Replace all values for all keys listed in `private_keys`
 
-    `data` must be a file-like object representing a csv file.'''
+    `data` must be a file-like object representing a csv file."""
     buf = BytesIO()
     if data_format == "csv":
         df = pl.read_csv(data)

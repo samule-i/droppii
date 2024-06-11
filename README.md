@@ -3,6 +3,19 @@ Python module to process data from an AWS (S3) bucket and anonymize personally i
 - [PyPi-repository](https://pypi.org/project/droppii)  
 - [Further-Documentation](https://samule-i.github.io/droppii)
 ___
+
+# CLI usage
+`droppii` can be used from the commandline by invoking the python module directly:  
+`python -m droppii -i s3 uri -k key1 key2 ... >> output_file`
+```
+options:
+  -h, --help            show this help message and exit
+  -i s3 uri, --input s3 uri
+                        s3 uri of file to be converted
+  -k KEYS [KEYS ...], --keys KEYS [KEYS ...]
+                        Keys to censor
+```
+
 # Quickstart
 Install droppii from PyPi
 ```sh

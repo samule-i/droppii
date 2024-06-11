@@ -1,4 +1,3 @@
-# Developer info
 ## Environment setup
 
 ```sh

@@ -1,6 +1,8 @@
 site_name: droppii docs
 nav:
   - Home: index.md
+  - Installation: installation.md
   - Usage: usage.md
+  - Input File Structure: file_structure.md
   - Developers: developers.md
 theme: readthedocs

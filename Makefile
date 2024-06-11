@@ -57,7 +57,6 @@ test: pytest coverage pkg_size
 standards: autopep8 bandit flake safety
 
 clean:
-	find -name *egg-info -exec rm -R {} \;
-	rm -R build .pytest_cache
+	rm -Rf build dist .pytest_cache .coverage src/droppii/__pycache__ test/__pycache__
 
 build: init standards test install

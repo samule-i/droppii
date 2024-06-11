@@ -8,7 +8,7 @@ from droppii import _replace_bytes_values
 
 
 def test_values_are_replaced(fake_csv_bytes):
-    '''All values for all keys specified should be replaced in returned data'''
+    """All values for all keys specified should be replaced in returned data"""
     private_keys = ["age", "email"]
     privatized_csv = _replace_bytes_values(
         fake_csv_bytes, private_keys, "csv")
@@ -20,8 +20,8 @@ def test_values_are_replaced(fake_csv_bytes):
 def test_values_are_unmodified(fake_csv_bytes,
                                fake_json_bytes,
                                fake_parquet_bytes):
-    '''All values for all keys not specified should be unmodified
-    in returned data'''
+    """All values for all keys not specified should be unmodified
+    in returned data"""
     private_keys = ["age", "email"]
     original = pl.read_csv(fake_csv_bytes)
     unmodified_keys = [k for k in original.columns if k not in private_keys]
@@ -41,7 +41,7 @@ def test_values_are_unmodified(fake_csv_bytes,
 
 
 def test_returns_bytes(fake_csv_bytes, fake_json_bytes, fake_parquet_bytes):
-    '''Should return bytes object'''
+    """Should return bytes object"""
     returned_csv = _replace_bytes_values(fake_csv_bytes, [], "csv")
     returned_json = _replace_bytes_values(fake_json_bytes, [], "json")
     returned_parquet = _replace_bytes_values(fake_parquet_bytes, [], "parquet")
@@ -51,7 +51,7 @@ def test_returns_bytes(fake_csv_bytes, fake_json_bytes, fake_parquet_bytes):
 
 
 def test_raises_on_incompatible_file_type(fake_csv_bytes):
-    '''Should raise an error if not passed an expected file format'''
+    """Should raise an error if not passed an expected file format"""
     with pytest.raises(TypeError):
         _replace_bytes_values(fake_csv_bytes, [], "pdf")
 
@@ -59,7 +59,7 @@ def test_raises_on_incompatible_file_type(fake_csv_bytes):
 def test_raises_on_corrupted_headers(fake_csv_bytes,
                                      fake_json_bytes,
                                      fake_parquet_bytes):
-    '''Should raise an error if columns do not match after transformation'''
+    """Should raise an error if columns do not match after transformation"""
     fake_df = pl.DataFrame({
         "c1": ["a", "b", "c"],
         "c2": ["1", "2", "3"]
@@ -82,3 +82,8 @@ def test_raises_on_parsing_incorrectly_as_json(fake_csv_bytes):
 def test_raises_on_parsing_incorrectly_as_parquet(fake_csv_bytes):
     with pytest.raises(ValueError):
         _replace_bytes_values(fake_csv_bytes, [], "parquet")
+
+
+def test_json_returned_in_same_format(fake_json_bytes):
+    result = _replace_bytes_values(fake_json_bytes, [], "json")
+    assert result == fake_json_bytes

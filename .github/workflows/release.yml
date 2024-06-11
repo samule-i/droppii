@@ -2,7 +2,7 @@ name: Create releases
 on:
   push:
     tags:
-      - 'v**'
+      - '[0-9]+\.[0-9]+\.[0-9]+'
 jobs:
   build-dist:
     runs-on: ubuntu-latest
@@ -16,7 +16,7 @@ jobs:
       - name: install dependencies
         run: pip install build
       - name: set pyroject version
-        run: sed -i -E '/version = /s/v[0-9]+\.[0-9]+\.[0-9]+/${{ github.ref_name }}/g' pyproject.toml
+        run: sed -i -E '/version = /s/[0-9]+\.[0-9]+\.[0-9]+/${{ github.ref_name }}/g' pyproject.toml
       - name: build dist
         run: python -m build
       - name: upload dist
@@ -78,16 +78,14 @@ jobs:
           asset_path: ./layer.zip
           asset_name: droppii-aws-layer-${{ github.ref_name }}.zip
           asset_content_type: application/zip
-      - name: Store dist version string
-        run: echo "PACKAGE_VERSION=${GITHUB_REF_NAME:1}">>$GITHUB_ENV
       - name: Upload dist
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above
-          asset_path: ./dist/droppii-${{ env.PACKAGE_VERSION }}-py3-none-any.whl
-          asset_name: droppii-${{ env.PACKAGE_VERSION }}-py3-none-any.whl
+          asset_path: ./dist/droppii-${{ github.ref_name }}-py3-none-any.whl
+          asset_name: droppii-${{ github.ref_name }}-py3-none-any.whl
           asset_content_type: application/zip
   pypi-publish:
     name: upload release to pypi

@@ -1,6 +1,6 @@
 [project]
 name = "droppii"
-version = "v0.0.0"
+version = "0.0.0"
 description = "General purpose tool to process data from S3 and anonymize fields containing personally identifiable information."
 readme = "README.md"
 requires-python = ">=3.11"

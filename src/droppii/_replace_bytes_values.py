@@ -1,4 +1,5 @@
 from io import BytesIO
+import json
 
 import polars as pl
 
@@ -42,5 +43,9 @@ def _replace_bytes_values(data: bytes,
         raise TypeError("Invalid file provided")
 
     buf.seek(0)
-    privatized_bytes = buf.read()
+    if data_format in ["csv", "parquet"]:
+        privatized_bytes = buf.read()
+    else:
+        json_data = json.load(buf)
+        privatized_bytes = json.dumps(json_data, indent=4).encode()
     return privatized_bytes

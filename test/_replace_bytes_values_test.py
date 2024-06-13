@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 
 import polars as pl
@@ -84,6 +85,13 @@ def test_raises_on_parsing_incorrectly_as_parquet(fake_csv_bytes):
         _replace_bytes_values(fake_csv_bytes, [], "parquet")
 
 
-def test_json_returned_in_same_format(fake_json_bytes):
-    result = _replace_bytes_values(fake_json_bytes, [], "json")
-    assert result == fake_json_bytes
+def test_json_returned_in_multiline_format():
+    data = [
+        {
+            "name": "David",
+            "age":98
+        }
+    ]
+    json_bytes = json.dumps(data, indent=4).encode()
+    result = _replace_bytes_values(json_bytes, [], "json")
+    assert result == json_bytes

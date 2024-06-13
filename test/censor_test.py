@@ -12,6 +12,7 @@ from droppii import censor
 
 @mock_aws
 def test_return_value_is_compatable_with_s3(populated_s3):
+    """Attempt to upload file to s3 and check correct response"""
     args = {"s3_uri": "s3://test/small.csv", "private_keys": []}
     json_string = json.dumps(args)
 
@@ -23,6 +24,7 @@ def test_return_value_is_compatable_with_s3(populated_s3):
 
 @mock_aws
 def test_csv_returns_as_csv(populated_s3):
+    """If passed CSV filetype, CSV bytes should be returned"""
     original_file = populated_s3.get_object(Bucket="test", Key="small.csv")
     original_data = original_file["Body"].read()
     original_df = pl.read_csv(original_data)
@@ -35,6 +37,7 @@ def test_csv_returns_as_csv(populated_s3):
 
 @mock_aws
 def test_parquet_returns_as_parquet(populated_s3):
+    """If passed parquet filetype, parquet bytes should be returned"""
     argument = {"s3_uri": "s3://test/small.parquet", "private_keys": []}
     returned = censor(json.dumps(argument))
     pl.read_parquet(returned)
@@ -42,6 +45,7 @@ def test_parquet_returns_as_parquet(populated_s3):
 
 @mock_aws
 def test_json_returns_as_json(populated_s3):
+    """If passed json filetype, json bytes should be returned"""
     argument = {"s3_uri": "s3://test/small.json", "private_keys": []}
     returned = censor(json.dumps(argument))
     pl.read_json(returned)
@@ -101,6 +105,7 @@ def test_returns_value_from_replace_bytes(populated_s3):
 
 @mock_aws
 def test_raises_on_no_file_ext(populated_s3):
+    """If passed a file with no extension, the program should raise an error"""
     populated_s3.put_object(Bucket="test", Key="small", Body="_")
     argument = {
         "s3_uri": "s3://test/small",
@@ -112,6 +117,7 @@ def test_raises_on_no_file_ext(populated_s3):
 
 @mock_aws
 def test_doesnt_error_on_mixed_case_filename(populated_s3, fake_csv_bytes):
+    """case of file extensions should not matter for detecting filetype"""
     populated_s3.put_object(
         Bucket="test",
         Key="SmALl.CsV",

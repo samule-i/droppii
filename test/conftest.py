@@ -1,4 +1,3 @@
-import os
 import random
 from io import BytesIO
 
@@ -8,10 +7,9 @@ import pytest
 from faker import Faker
 from moto import mock_aws
 
-files_path = os.path.abspath("./test/sample_files")
-
 
 def generate_fake_data(rows) -> list[dict]:
+    "Use Faker to generate a single row of fake data"
     faker = Faker(["en_GB"])
     fake_data = [
         {"_id": num,
@@ -52,6 +50,7 @@ def parquet_bytes(data: pl.DataFrame) -> bytes:
 
 @pytest.fixture(scope="session")
 def small_fake_data():
+    """Use Faker to generate 100 rows of testing data"""
     random.seed(0)
     fake_data = generate_fake_data(100)
     return fake_data
@@ -59,6 +58,7 @@ def small_fake_data():
 
 @pytest.fixture(scope="session")
 def large_fake_data():
+    """Use Faker to generate 60k rows of testing data"""
     random.seed(0)
     fake_data = generate_fake_data(60_000)
     return fake_data
@@ -66,18 +66,21 @@ def large_fake_data():
 
 @pytest.fixture(scope="session")
 def fake_csv_bytes(small_fake_data) -> bytes:
+    """Return a bytes representation of a small amount of csv data"""
     df = pl.DataFrame(small_fake_data)
     return csv_bytes(df)
 
 
 @pytest.fixture(scope="session")
 def fake_json_bytes(small_fake_data) -> bytes:
+    """Return a bytes representation of a small amount of json data"""
     df = pl.DataFrame(small_fake_data)
     return json_bytes(df)
 
 
 @pytest.fixture(scope="session")
 def fake_parquet_bytes(small_fake_data) -> bytes:
+    """Return a bytes representation of a small amount of parquet data"""
     df = pl.DataFrame(small_fake_data)
     return parquet_bytes(df)
 

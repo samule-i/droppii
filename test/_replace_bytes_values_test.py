@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 
 import polars as pl
@@ -56,9 +57,9 @@ def test_raises_on_incompatible_file_type(fake_csv_bytes):
         _replace_bytes_values(fake_csv_bytes, [], "pdf")
 
 
-def test_raises_on_corrupted_headers(fake_csv_bytes,
-                                     fake_json_bytes,
-                                     fake_parquet_bytes):
+def test_raises_on_column_mismatch(fake_csv_bytes,
+                                   fake_json_bytes,
+                                   fake_parquet_bytes):
     """Should raise an error if columns do not match after transformation"""
     fake_df = pl.DataFrame({
         "c1": ["a", "b", "c"],
@@ -75,15 +76,24 @@ def test_raises_on_corrupted_headers(fake_csv_bytes,
 
 
 def test_raises_on_parsing_incorrectly_as_json(fake_csv_bytes):
+    """Program should raise if polars is unable to parse data as json"""
     with pytest.raises(ValueError):
         _replace_bytes_values(fake_csv_bytes, [], "json")
 
 
 def test_raises_on_parsing_incorrectly_as_parquet(fake_csv_bytes):
+    """Program should raise if polars is unable to parse data as parquet"""
     with pytest.raises(ValueError):
         _replace_bytes_values(fake_csv_bytes, [], "parquet")
 
 
-def test_json_returned_in_same_format(fake_json_bytes):
-    result = _replace_bytes_values(fake_json_bytes, [], "json")
-    assert result == fake_json_bytes
+def test_json_returned_in_multiline_format():
+    data = [
+        {
+            "name": "David",
+            "age":98
+        }
+    ]
+    json_bytes = json.dumps(data, indent=4).encode()
+    result = _replace_bytes_values(json_bytes, [], "json")
+    assert result == json_bytes

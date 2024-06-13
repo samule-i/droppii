@@ -16,7 +16,7 @@ example with "email" as key:
 
 ## CLI usage
 `droppii` can be used from the commandline by invoking the python module directly:  
-`python -m droppii -i s3 uri -k key1 key2 ... >> output_file`
+`python -m droppii -i s3 uri -k key1 key2 ... > output_file`
 ```
 options:
   -h, --help            show this help message and exit
@@ -30,7 +30,22 @@ options:
 python -m droppii -i s3://bucket/test_file.json -k email_address name
 ```
 ```
->> [{"_id":98,"name":"***","age":38,"email":"***","score":39,"owner":1,"favourite_colour":"#ce5a6c"},{"_id":99,"name":"***","age":21,"email":"***","score":53,"owner":0,"favourite_colour":"#d33b68"}]
+>> [
+    {
+        "_id":98,
+        "name":"***",
+        "age":38,
+        "email":"***",
+        ...
+    },
+    {
+        "_id":99,
+        "name":"***",
+        "age":21,
+        "email":"***",
+        ...
+    }
+]
 ```
 
 ## Quickstart
@@ -48,7 +63,7 @@ import json
 import boto3
 
 json_params = json.dumps({
-  "s3_uri" = "s3://your-bucket/your_file.csv",
+    "s3_uri" = "s3://your-bucket/your_file.csv",
 	"keys" = ["name", "address", "email_address"]
 })
 anonymized_bytes = droppii.censor(json_params)

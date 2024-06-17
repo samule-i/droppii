@@ -16,7 +16,7 @@ ___
 
 # CLI usage
 `droppii` can be used from the commandline by invoking the python module directly:  
-`python -m droppii -i s3 uri -k key1 key2 ... >> output_file`
+`python -m droppii -i s3 uri -k key1 key2 ... > output_file`
 ```
 options:
   -h, --help            show this help message and exit

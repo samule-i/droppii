@@ -75,3 +75,19 @@ s3client.put_object(
   Body = anonymized_bytes
 )
 ```
+
+## Performance
+Using AWS lambda as a benchmark where the lambda calls `droppii.censor` as simply as possible with the near worst case of modifying all but one key.
+```
+get s3 file body
+result = droppii.censor(s3 file body)
+return DataFrame(result)
+```
+
+Using ~1mb sample files
+
+| |records|keys|keys processed|file size|execution time|
+|---|---|---|---|---|---|
+|CSV|20,120|7|6|1.1mb|0.6s|
+|JSON|10,427|7|6|1.3mb|2.7s|
+|Parquet|60,000|7|6|1.1mb|2.5s|

@@ -1,10 +1,10 @@
 ## s3 file structure
 ### CSV
 ```
-column_1, column_2, column3, ...
-c1_Value_1, c2_Value_1, c3_Value_1, ...
-c1_Value_2, c2_Value_2, c3_Value_2, ...
-c1_Value_3, c2_Value_3, c3_Value_3, ...
+_id, name, Email
+0, "Andrew", "Andrew@email.com"
+1, "Bob", "bob@email.com"
+2, "Claire", "claire@email.com"
 ```
 
 ### JSON
@@ -12,20 +12,19 @@ JSON format must be a list of objects representing rows, with a key-value pair f
 ```
 [
   {
-    column_1: c1_Value_1,
-    column_2: c2_Value_1, 
-    column_3: c3_Value_1
+    _id: 0,
+    name: "Andrew", 
+    Email: "Andrew@email.com"
   },
   {
-    column_1: c1_Value_2,
-    column_2: c2_Value_2, 
-    column_3: c3_Value_2
+    _id: 1,
+    name: "Bob", 
+    Email: "bob@email.com"
   },
   {
-    column_1: c1_Value_3,
-    column_2: c2_Value_3, 
-    column_3: c3_Value_3
-  },
-  ...
+    _id: 2,
+    name: "Claire", 
+    Email: "claire@email.com"
+  }
 ]
 ```

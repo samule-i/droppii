@@ -43,15 +43,15 @@ import droppii
 import boto3
 
 json_params = json.dumps({
-  "s3_uri" = "s3://your-bucket/your_file.csv",
-	"private_keys" = ["name", "address", "email_address"]
+    "s3_uri" = "s3://your-bucket/your_file.csv",
+    "private_keys" = ["name", "address", "email_address"]
 })
 anonymized_bytes = droppii.censor(json_params)
 
 s3client = boto3.Client("s3")
 s3client.put_object(
-  Bucket = "your-destination-bucket",
-  Key = "anonymized_file.csv",
-  Body = anonymized_bytes
+    Bucket = "your-destination-bucket",
+    Key = "anonymized_file.csv",
+    Body = anonymized_bytes
 )
 ``` 

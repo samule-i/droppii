@@ -58,5 +58,3 @@ standards: autopep8 bandit flake safety
 
 clean:
 	rm -Rf build dist .pytest_cache .coverage src/droppii/__pycache__ test/__pycache__
-
-build: init standards test install
